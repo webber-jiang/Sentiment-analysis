@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[34]:
+# In[1]:
 
 
 #load rquired packages
@@ -33,7 +33,7 @@ analyser.polarity_scores("The movie is good")
 analyser.polarity_scores("The movie is very bad")
 
 
-# In[9]:
+# In[5]:
 
 
 #categorise the sentiments into 0 for neutral, -1 for negative, 1 for positive (for compound)
@@ -42,37 +42,40 @@ def sentiment_analyzer_scores(text):
     lb=score['compound']
     if lb>=0.05:
         return 1
-    elif(lb>-0.5) and (lb<0.05):
+    elif(lb>-0.05) and (lb<0.05):
         return 0
     else:
         return -1
 
 
-# In[13]:
+# In[6]:
 
 
+#test
 sentiment_analyzer_scores("The movie is VERY BAD!")
 
 
-# In[14]:
+# In[7]:
 
 
+#test
 sentiment_analyzer_scores("The movie is VERY GOOD!")
 
 
-# In[15]:
+# In[8]:
 
 
+#test
 sentiment_analyzer_scores("The movie is LONG")
 
 
-# In[16]:
+# In[9]:
 
 
 import tweepy
 
 
-# In[17]:
+# In[10]:
 
 
 consumer_key = 'l7ecjqISp5QbzUOHbgbti14LB'
@@ -81,7 +84,7 @@ access_token = '1144586854898909184-jKEdg5qv38vAq4uJVGfDGjr1TjH0zE'
 access_token_secret = 'leXZf2zssurRBf5jK4GZEm8n0HDcptcaZ9GBIJLgYRcAt'
 
 
-# In[18]:
+# In[11]:
 
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -89,7 +92,7 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 
-# In[19]:
+# In[12]:
 
 
 #ask user to enter the twitter name and the number of tweets
@@ -107,30 +110,30 @@ def list_tweets(user_id, count, prt=False):
     return tw
 
 
-# In[20]:
+# In[13]:
 
 
 userID='realDonaldTrump'
 count=200
 
 
-# In[21]:
+# In[14]:
 
 
 tw_trump=list_tweets(userID, count)
 
 
-# In[25]:
+# In[18]:
 
 
 #tw_trump[12]
 #tw_trump[0]
-tw_trump[10]
+tw_trump[0]
 
 
 # wew
 
-# In[26]:
+# In[19]:
 
 
 def remove_pattern(input_txt, pattern):
@@ -149,57 +152,58 @@ def clean_tweets(lst):
     # remove URL links (httpxxx)
     lst = np.vectorize(remove_pattern)(lst, "https?://[A-Za-z0-9./]*")
     
-    # remove special characters, numbers, punctuations (except for #)
+    # remove special characters, numbers, punctuations (#)
     lst = np.core.defchararray.replace(lst, "[^a-zA-Z#]", " ")
     return lst
 
 
-# In[27]:
+# In[20]:
 
 
 tw_trump[10]
 
 
-# In[28]:
+# In[21]:
 
 
 tw_trump=clean_tweets(tw_trump)
 
 
-# In[29]:
+# In[22]:
 
 
 tw_trump[10]
 
 
-# In[31]:
+# In[23]:
 
 
+#test after removing unwated letters.
 sentiment_analyzer_scores(tw_trump[10])
 
 
-# In[32]:
+# In[36]:
 
 
 def anl_tweets(lst, title='Tweets Sentiment', engl=True ):
     sents = []
     for tw in lst:
         try:
-            st = sentiment_analyzer_scores(tw, engl)
+            st = sentiment_analyzer_scores(tw)
             sents.append(st)
         except:
             sents.append(0)
     ax = sns.distplot(
         sents,
         kde=False,
-        bins=3)
+        bins=5)
     ax.set(xlabel='Negative                Neutral                 Positive',
            ylabel='#Tweets',
           title="Tweets of @"+title)
     return sents
 
 
-# In[35]:
+# In[37]:
 
 
 tw_trump_sent=anl_tweets(tw_trump, userID)
